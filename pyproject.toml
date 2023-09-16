@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "to-do-gui"
+version = "0.1.0"
+description = ""
+authors = ["polenom <vitalimitsevich@yandex.by>"]
+readme = "README.md"
+packages = [{include = "to_do_gui"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
