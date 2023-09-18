@@ -1,15 +1,15 @@
 import tkinter as tk
 from functools import partial
 from tkinter import messagebox
-import sqlite3
 from tkinter import ttk
 from sqlite3 import Connection, Cursor
+from tkinter.ttk import Treeview, Entry
 
 WIDTH = 60
 
 
 def connect_db() -> tuple[Connection, Cursor]:
-    conn = sqlite3.connect("todo.db")
+    conn = Connection("todo.db")
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -23,7 +23,12 @@ def connect_db() -> tuple[Connection, Cursor]:
 
 
 # Function to add a task to the database
-def add_task(task_entry, task_list, conn, cursor):
+def add_task(
+        task_entry: Entry,
+        task_list: Treeview,
+        conn: Connection,
+        cursor: Cursor
+) -> None:
     task = task_entry.get()
     if task:
         cursor.execute("INSERT INTO tasks (task) VALUES (?)", (task,))
@@ -34,7 +39,11 @@ def add_task(task_entry, task_list, conn, cursor):
         messagebox.showwarning("Warning", "Task cannot be empty.")
 
 
-def remove_task(task_list, conn, cursor):
+def remove_task(
+        task_list: Treeview,
+        conn: Connection,
+        cursor: Cursor,
+) -> None:
     selected_item = task_list.selection()
     if selected_item:
         for item in selected_item:
@@ -46,7 +55,7 @@ def remove_task(task_list, conn, cursor):
         messagebox.showwarning("Warning", "Please select a task to remove.")
 
 
-def run():
+def run() -> None:
     conn, cursor = connect_db()
     root = tk.Tk()
     root.title("Daily Tasks")
@@ -63,13 +72,13 @@ def run():
         font=("Arial", 25)
     )
     task_label.pack(pady=(55, 30))
-    task_entry = tk.Entry(root, width=WIDTH, background="#343638", foreground="white")
+    task_entry = Entry(root, width=WIDTH, background="#343638", foreground="white")
     task_entry.pack(ipadx=10)
 
     task_list_frame = tk.Frame(root, width=WIDTH)
     task_list_frame.pack()
 
-    task_list = ttk.Treeview(task_list_frame, columns=("Task",), show="tree")
+    task_list = Treeview(task_list_frame, columns=("Task",), show="tree")
     task_list.pack(side=tk.LEFT, fill=tk.Y)
 
     task_list_scrollbar = ttk.Scrollbar(task_list_frame, orient=tk.VERTICAL, command=task_list.yview, )
